@@ -1,6 +1,9 @@
 package com.reactive.pruebasreactive.exceptions;
 
 import com.reactive.pruebasreactive.responses.ErrorResponse;
+import com.reactive.pruebasreactive.responses.Response;
+import com.reactive.pruebasreactive.responses.ValidationErrorResponse;
+import jakarta.validation.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.crossstore.ChangeSetPersister;
@@ -26,11 +29,15 @@ public class GlobalExceptionHandler {
       .body(errorResponse));
   }
 
-  @ExceptionHandler(WebExchangeBindException.class)
-  public Mono<ResponseEntity<String>> handleValidationExceptions(WebExchangeBindException ex) {
-    return Mono.just(ResponseEntity
-      .status(HttpStatus.BAD_REQUEST)
-      .body("Error de validación: " + ex.getFieldErrors()));
+  @ExceptionHandler(CustomValidationException.class)
+  public Mono<ResponseEntity<ValidationErrorResponse>> handleValidationExceptions(CustomValidationException ex) {
+    ValidationErrorResponse validationErrorResponse = new ValidationErrorResponse(
+      HttpStatus.BAD_REQUEST,
+      ex.getMessage(),
+      ex.getErrors()
+    );
+
+    return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(validationErrorResponse));
   }
 
   @ExceptionHandler(NoResourceFoundException.class)
@@ -49,6 +56,7 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(RuntimeException.class)
   public Mono<ResponseEntity<ErrorResponse>> handleException(Exception e){
+    logger.error("RuntimeException: {}", e.getMessage());
     var errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error");
     return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
       .body(errorResponse));

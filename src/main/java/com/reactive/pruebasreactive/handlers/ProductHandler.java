@@ -30,12 +30,4 @@ public class ProductHandler {
   public Mono<ServerResponse> createProduct(ServerRequest request) {
     return productService.createProduct(request);
   }
-
-  public Mono<ServerResponse> updateProduct(ServerRequest request) {
-    return productService.updateProduct(request);
-  }
-
-  public Mono<ServerResponse> deleteProduct(ServerRequest request) {
-    return productService.deleteProduct(request);
-  }
 }

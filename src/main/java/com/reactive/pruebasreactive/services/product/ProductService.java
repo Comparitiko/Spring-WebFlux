@@ -10,6 +10,4 @@ public interface ProductService {
   Mono<ServerResponse> getAllProducts(ServerRequest request);
   Mono<ServerResponse> getProductById(ServerRequest request);
   Mono<ServerResponse> createProduct(ServerRequest request);
-  Mono<ServerResponse> updateProduct(ServerRequest request);
-  Mono<ServerResponse> deleteProduct(ServerRequest request);
 }

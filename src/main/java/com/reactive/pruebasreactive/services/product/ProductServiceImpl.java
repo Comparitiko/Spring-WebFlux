@@ -3,26 +3,27 @@ package com.reactive.pruebasreactive.services.product;
 import com.reactive.pruebasreactive.dtos.ProductDto;
 import com.reactive.pruebasreactive.entities.Product;
 import com.reactive.pruebasreactive.exceptions.CustomException;
+import com.reactive.pruebasreactive.exceptions.CustomValidationException;
 import com.reactive.pruebasreactive.repositories.ProductRepository;
 import com.reactive.pruebasreactive.responses.DataResponse;
+import com.reactive.pruebasreactive.responses.FieldError;
 import com.reactive.pruebasreactive.responses.PaginatedResponse;
 import com.reactive.pruebasreactive.responses.Response;
 import com.reactive.pruebasreactive.utils.ParamsUtils;
-import io.netty.channel.unix.Errors;
 import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -76,33 +77,43 @@ public class ProductServiceImpl implements ProductService {
     Mono<Product> productDB = productRepository.findById(objectId)
       .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, "Product not found")));
 
-    return productDB.flatMap(product -> ServerResponse.ok()
+    return productDB.flatMap(product -> Response.builder(HttpStatus.OK)
       .bodyValue(new DataResponse<>(HttpStatus.OK, product)
     ));
   }
 
   @Override
   public Mono<ServerResponse> createProduct(ServerRequest request) {
-//    Mono<Product> product = request.bodyToMono(ProductDto.class)
-//      .flatMap(productDto -> {
-//        Errors errors = new BeanPropertyBindingResult(productDto, "productDto");
-//      }
-//      };
-//
-//    return ServerResponse.status(HttpStatus.CREATED)
-//      .contentType(MediaType.APPLICATION_JSON)
-//      .body(this.productRepository.saveAll(product), Product.class);
 
-    return ServerResponse.ok().bodyValue("ok");
-  }
+    Mono<ProductDto> product = request.bodyToMono(ProductDto.class);
 
-  @Override
-  public Mono<ServerResponse> updateProduct(ServerRequest request) {
-    return ServerResponse.ok().bodyValue("ok");
-  }
+    // Validate the product DTO using the validator
+    Mono<Product> validatedProduct = product.flatMap(p -> {
+      Set<ConstraintViolation<ProductDto>> violations = this.validator.validate(p);
+      if (!violations.isEmpty()) {
+        // Convertir las violaciones en un mapa de errores detallados
+        List<FieldError> errorList = violations.stream()
+          .map(v -> new FieldError(v.getPropertyPath().toString(), v.getMessage()))
+          .toList();
+        return Mono.error(new CustomValidationException("Invalid product", errorList));
+      }
+      // If the product is valid, create a new Product using the ProductDto
+      return Mono.just(new Product(p));
+    });
 
-  @Override
-  public Mono<ServerResponse> deleteProduct(ServerRequest request) {
-    return ServerResponse.ok().bodyValue("ok");
+    Mono<Product> savedProduct = validatedProduct.flatMap(p ->
+      this.productRepository.existsByName(p.getName())
+        .flatMap(exists -> {
+          if (exists) {
+            return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Product already exists"));
+          }
+          // Guardar el producto antes de responder
+          return this.productRepository.save(p);
+        })
+    );
+
+    return savedProduct.flatMap(pr -> Response.builder(HttpStatus.CREATED)
+      .bodyValue(new DataResponse<>(HttpStatus.CREATED, pr))
+    );
   }
 }

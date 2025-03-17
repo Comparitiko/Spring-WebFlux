@@ -1,5 +1,6 @@
 package com.reactive.pruebasreactive.entities;
 
+import com.reactive.pruebasreactive.dtos.ProductDto;
 import lombok.*;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -19,5 +20,11 @@ public class Product extends BaseEntity {
     super();
     this.name = name;
     this.price = price;
+  }
+
+  public Product(ProductDto productDto) {
+    super();
+    this.name = productDto.name();
+    this.price = productDto.price();
   }
 }
