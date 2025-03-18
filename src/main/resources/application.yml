@@ -17,3 +17,10 @@ spring:
 
   config:
     import: optional:file:.env[.properties]
+
+logging:
+  file:
+    name: "logs/application.log"
+  level:
+    root: INFO
+    org.springframework.web: DEBUG

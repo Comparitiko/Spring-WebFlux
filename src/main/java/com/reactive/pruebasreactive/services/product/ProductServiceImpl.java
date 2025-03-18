@@ -2,12 +2,12 @@ package com.reactive.pruebasreactive.services.product;
 
 import com.reactive.pruebasreactive.dtos.ProductDto;
 import com.reactive.pruebasreactive.entities.Product;
-import com.reactive.pruebasreactive.exceptions.CustomException;
-import com.reactive.pruebasreactive.exceptions.CustomValidationException;
+import com.reactive.pruebasreactive.exceptions.custom.CustomException;
+import com.reactive.pruebasreactive.exceptions.custom.CustomValidationException;
 import com.reactive.pruebasreactive.repositories.ProductRepository;
-import com.reactive.pruebasreactive.responses.DataResponse;
-import com.reactive.pruebasreactive.responses.FieldError;
-import com.reactive.pruebasreactive.responses.PaginatedResponse;
+import com.reactive.pruebasreactive.responses.success.DataResponse;
+import com.reactive.pruebasreactive.responses.error.FieldError;
+import com.reactive.pruebasreactive.responses.success.paginated.PaginatedResponse;
 import com.reactive.pruebasreactive.responses.Response;
 import com.reactive.pruebasreactive.utils.ParamsUtils;
 import jakarta.validation.ConstraintViolation;
@@ -21,9 +21,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService {

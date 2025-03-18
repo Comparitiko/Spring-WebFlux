@@ -1,4 +1,4 @@
-package com.reactive.pruebasreactive.exceptions;
+package com.reactive.pruebasreactive.exceptions.custom;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

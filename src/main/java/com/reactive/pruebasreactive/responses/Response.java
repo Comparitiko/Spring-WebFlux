@@ -1,9 +1,11 @@
 package com.reactive.pruebasreactive.responses;
 
 import com.mongodb.internal.connection.Server;
+import com.reactive.pruebasreactive.responses.error.ErrorResponse;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
@@ -27,5 +29,9 @@ public abstract class Response {
   public static ServerResponse.BodyBuilder builder(HttpStatus status) {
     return ServerResponse.status(status)
       .contentType(MediaType.APPLICATION_JSON);
+  }
+
+  public static Mono<ResponseEntity<ErrorResponse>> builder(HttpStatus status, ErrorResponse body) {
+    return Mono.just(ResponseEntity.status(status).body(body));
   }
 }

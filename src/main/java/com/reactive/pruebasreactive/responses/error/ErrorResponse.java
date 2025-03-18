@@ -1,5 +1,6 @@
-package com.reactive.pruebasreactive.responses;
+package com.reactive.pruebasreactive.responses.error;
 
+import com.reactive.pruebasreactive.responses.Response;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 

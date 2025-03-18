@@ -22,8 +22,6 @@ public class ProductRouter {
       .GET("", handler::getAllProducts) // Route: GET /api/products
       .GET("/{id}", handler::getProductById) // Route: GET /api/products/{id}
       .POST("", handler::createProduct) // Route: POST /api/products
-      .PUT("/{id}", handler::updateProduct) // Route: PUT /api/products/{id}
-      .DELETE("/{id}", handler::deleteProduct) // Route: DELETE /api/products/{id}
       .build();
   }
 }

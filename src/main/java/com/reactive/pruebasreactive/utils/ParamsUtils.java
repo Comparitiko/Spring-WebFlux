@@ -1,6 +1,6 @@
 package com.reactive.pruebasreactive.utils;
 
-import com.reactive.pruebasreactive.exceptions.CustomException;
+import com.reactive.pruebasreactive.exceptions.custom.CustomException;
 import org.springframework.http.HttpStatus;
 
 public class ParamsUtils {

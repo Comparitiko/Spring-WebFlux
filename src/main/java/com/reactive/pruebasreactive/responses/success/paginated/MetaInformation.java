@@ -1,4 +1,4 @@
-package com.reactive.pruebasreactive.responses;
+package com.reactive.pruebasreactive.responses.success.paginated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;

@@ -1,5 +1,6 @@
-package com.reactive.pruebasreactive.responses;
+package com.reactive.pruebasreactive.responses.success.paginated;
 
+import com.reactive.pruebasreactive.responses.success.DataResponse;
 import lombok.Getter;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;

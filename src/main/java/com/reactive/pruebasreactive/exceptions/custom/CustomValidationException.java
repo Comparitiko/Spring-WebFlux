@@ -1,6 +1,6 @@
-package com.reactive.pruebasreactive.exceptions;
+package com.reactive.pruebasreactive.exceptions.custom;
 
-import com.reactive.pruebasreactive.responses.FieldError;
+import com.reactive.pruebasreactive.responses.error.FieldError;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
